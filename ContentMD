@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContentMD — Gestão de Conteúdo Médico</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface-2: #F2EFE9;
+    --border: #E4E0D8;
+    --border-dark: #C8C3B8;
+    --text: #1A1916;
+    --text-2: #5C584F;
+    --text-3: #9C9890;
+    --accent: #1A6B4A;
+    --accent-light: #E8F5EE;
+    --accent-mid: #2D9E6F;
+    --purple: #4A3FA8;
+    --purple-light: #EEEDFC;
+    --amber: #9B6B0A;
+    --amber-light: #FDF3DC;
+    --coral: #B84030;
+    --coral-light: #FCF0EE;
+    --blue: #1A5FA8;
+    --blue-light: #EAF2FC;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── LOGIN ──────────────────────────────── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 2rem;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .login-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .login-logo span {
+    color: var(--accent);
+  }
+
+  .login-logo p {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 6px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+
+  .login-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-type-btn {
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .login-type-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  .login-type-btn .btn-icon {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover { background: #155c3e; }
+  .btn-primary:active { transform: scale(0.99); }
+
+  .login-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 1.5rem;
+  }
+
+  .login-hint strong { color: var(--text-2); font-family: 'DM Mono', monospace; }
+
+  /* ── APP SHELL ──────────────────────────── */
+  #app { display: none; min-height: 100vh; }
+
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ────────────────────────────── */
+  .sidebar {
+    width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .sidebar-logo span { color: var(--accent); }
+
+  .sidebar-role {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .sidebar-user {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .user-email {
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  .sidebar-nav {
+    padding: 1rem 0.75rem;
+    flex: 1;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 0.75rem;
+    margin-bottom: 4px;
+    margin-top: 16px;
+  }
+
+  .nav-section-label:first-child { margin-top: 0; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+    transition: all 0.12s;
+    margin-bottom: 2px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); }
+
+  .nav-item .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .client-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.12s;
+    margin-bottom: 2px;
+  }
+
+  .client-item:hover { background: var(--surface-2); }
+  .client-item.active { background: var(--accent-light); }
+
+  .client-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .client-info { flex: 1; min-width: 0; }
+  .client-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .client-spec { font-size: 11px; color: var(--text-3); }
+
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 500;
+    transition: all 0.12s;
+  }
+
+  .logout-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+  /* ── MAIN CONTENT ───────────────────────── */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    min-width: 0;
+  }
+
+  .page { display: none; padding: 2rem 2.5rem; }
+  .page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 4px;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .breadcrumb-sep { color: var(--border-dark); }
+
+  /* ── METRICS ROW ────────────────────────── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+
+  .metric-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    margin-bottom: 6px;
+  }
+
+  .metric-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 6px;
+  }
+
+  .metric-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+
+  .badge-green { background: var(--accent-light); color: var(--accent); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-coral { background: var(--coral-light); color: var(--coral); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-gray { background: var(--surface-2); color: var(--text-3); }
+
+  /* ── CARDS ──────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CLIENT GRID ────────────────────────── */
+  .client-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .client-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+
+  .client-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+  }
+
+  .client-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .client-card-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .client-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .client-card-spec {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .client-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .client-stat-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .client-stat-value { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  /* ── CALENDAR ───────────────────────────── */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .month-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    flex: 1;
+  }
+
+  .month-btn {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-2);
+    transition: all 0.12s;
+  }
+
+  .month-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .cal-day-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 0;
+  }
+
+  .cal-day {
+    min-height: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.12s;
+    position: relative;
+  }
+
+  .cal-day:hover { border-color: var(--accent-mid); }
+  .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+  .cal-day.today { border-color: var(--accent); border-width: 1.5px; }
+
+  .cal-day-num {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    margin-bottom: 4px;
+  }
+
+  .cal-day.today .cal-day-num {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .cal-post {
+    display: block;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+
+  .cal-post-reel { background: var(--purple-light); color: var(--purple); }
+  .cal-post-carrossel { background: var(--accent-light); color: var(--accent); }
+  .cal-post-story { background: var(--amber-light); color: var(--amber); }
+  .cal-post-feed { background: var(--blue-light); color: var(--blue); }
+
+  /* ── CONTENT TABLE ──────────────────────── */
+  .content-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .content-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .content-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .content-table tr:last-child td { border-bottom: none; }
+  .content-table tr:hover td { background: var(--surface-2); }
+
+  .content-type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-ok { background: var(--accent-light); color: var(--accent); }
+  .status-rascunho { background: var(--amber-light); color: var(--amber); }
+  .status-agendado { background: var(--blue-light); color: var(--blue); }
+  .status-revisao { background: var(--coral-light); color: var(--coral); }
+
+  /* ── PILARES ────────────────────────────── */
+  .pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .pilar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    border-left: 4px solid;
+  }
+
+  .pilar-card.teal { border-left-color: var(--accent-mid); }
+  .pilar-card.purple { border-left-color: var(--purple); }
+  .pilar-card.amber { border-left-color: #E0A030; }
+  .pilar-card.coral { border-left-color: var(--coral); }
+
+  .pilar-num {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .pilar-card.teal .pilar-num { color: var(--accent); }
+  .pilar-card.purple .pilar-num { color: var(--purple); }
+  .pilar-card.amber .pilar-num { color: var(--amber); }
+  .pilar-card.coral .pilar-num { color: var(--coral); }
+
+  .pilar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .pilar-desc {
+    font-size: 12px;
+    color: var(--text-3);
+    line-height: 1.5;
+  }
+
+  .pilar-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .format-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    background: var(--surface-2);
+    color: var(--text-3);
+  }
+
+  /* ── ROTEIROS ───────────────────────────── */
+  .roteiro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .roteiro-header {
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .roteiro-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .roteiro-type-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .roteiro-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .roteiro-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .roteiro-chevron { font-size: 16px; color: var(--text-3); transition: transform 0.2s; }
+  .roteiro-card.open .roteiro-chevron { transform: rotate(180deg); }
+
+  .roteiro-body { display: none; padding: 1.25rem; }
+  .roteiro-card.open .roteiro-body { display: block; }
+
+  .script-block {
+    background: var(--surface-2);
+    border-left: 3px solid var(--border-dark);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+
+  .script-block.hook { border-left-color: var(--coral); }
+  .script-block.ponte { border-left-color: var(--amber); }
+  .script-block.dev { border-left-color: var(--accent); }
+  .script-block.cta { border-left-color: var(--purple); }
+  .script-block.story { border-left-color: #E0A030; }
+
+  .script-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .script-block.hook .script-label { color: var(--coral); }
+  .script-block.ponte .script-label { color: var(--amber); }
+  .script-block.dev .script-label { color: var(--accent); }
+  .script-block.cta .script-label { color: var(--purple); }
+  .script-block.story .script-label { color: var(--amber); }
+
+  .script-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .script-timing {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── FUNIL ──────────────────────────────── */
+  .funil-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .funil-step-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all 0.12s;
+  }
+
+  .funil-step-row:hover { border-color: var(--accent); }
+
+  .funil-step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .funil-step-content { flex: 1; }
+  .funil-step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .funil-step-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .funil-step-tag { font-size: 11px; font-weight: 600; flex-shrink: 0; }
+
+  /* ── SETTINGS ───────────────────────────── */
+  .settings-section {
+    margin-bottom: 2rem;
+  }
+
+  .settings-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .settings-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  .toggle {
+    width: 40px;
+    height: 22px;
+    background: var(--border-dark);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle.on { background: var(--accent); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on::after { transform: translateX(18px); }
+
+  /* ── WEEK SCHEDULE ──────────────────────── */
+  .week-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .week-time {
+    font-size: 11px;
+    color: var(--text-3);
+    padding: 6px 8px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .week-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+  }
+
+  .week-slot {
+    min-height: 64px;
+    border-radius: var(--radius);
+    padding: 8px;
+    font-size: 11px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .week-slot.empty { background: transparent; }
+  .week-slot.reel { background: var(--purple-light); border: 1px solid #AFA9EC; }
+  .week-slot.carrossel { background: var(--accent-light); border: 1px solid #5DCAA5; }
+  .week-slot.story { background: var(--amber-light); border: 1px solid #EF9F27; }
+  .week-slot.rest { background: var(--surface-2); border: 1px solid var(--border); }
+
+  .week-slot-type { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .week-slot.reel .week-slot-type { color: var(--purple); }
+  .week-slot.carrossel .week-slot-type { color: var(--accent); }
+  .week-slot.story .week-slot-type { color: var(--amber); }
+  .week-slot.rest .week-slot-type { color: var(--text-3); }
+  .week-slot-title { font-size: 10px; color: var(--text); font-weight: 500; }
+  .week-slot-time { font-size: 10px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+  /* ── BTN ACTIONS ────────────────────────── */
+  .btn-outline {
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    transition: all 0.12s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-sm {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-2);
+    transition: all 0.12s;
+  }
+
+  .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-sm.danger:hover { border-color: var(--coral); color: var(--coral); }
+
+  /* ── MODAL ──────────────────────────────── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 540px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title { font-size: 16px; font-weight: 600; color: var(--text); }
+
+  .modal-close {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--surface-2);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+  }
+
+  .modal-close:hover { background: var(--coral-light); color: var(--coral); }
+
+  .modal-body { padding: 1.5rem; }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* ── MISC ───────────────────────────────── */
+  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-3);
+  }
+
+  .empty-state-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state-text { font-size: 14px; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .text-muted { color: var(--text-3); font-size: 12px; }
+  .text-bold { font-weight: 600; }
+
+  .alert {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 1rem;
+    border: 1px solid;
+  }
+
+  .alert-info { background: var(--blue-light); color: var(--blue); border-color: #85B7EB; }
+  .alert-success { background: var(--accent-light); color: var(--accent); border-color: #5DCAA5; }
+
+  /* ── ANIMAÇÕES ──────────────────────────── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page.active { animation: fadeIn 0.2s ease; }
+
+  /* ── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 900px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .client-grid { grid-template-columns: repeat(2, 1fr); }
+    .pilares-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     TELA DE LOGIN
+════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-container">
+    <div class="login-logo">
+      <h1>Content<span>MD</span></h1>
+      <p>Plataforma de gestão de conteúdo médico</p>
+    </div>
+
+    <div class="login-card">
+      <div class="login-selector">
+        <button class="login-type-btn active" onclick="selectLoginType('agency', this)">
+          <span class="btn-icon">🏢</span>
+          Agência
+        </button>
+        <button class="login-type-btn" onclick="selectLoginType('client', this)">
+          <span class="btn-icon">👨‍⚕️</span>
+          Médico / Cliente
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" value="agencia@contentmd.com">
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="login-password" placeholder="••••••••" value="123456">
+      </div>
+
+      <button class="btn-primary" onclick="doLogin()">Entrar na plataforma</button>
+
+      <div class="login-hint">
+        <strong>Agência:</strong> agencia@contentmd.com / 123456<br>
+        <strong>Médico:</strong> dr@zerbinati.com.br / 123456
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     APP
+════════════════════════════════════════ -->
+<div id="app">
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Content<span>MD</span></div>
+      <div class="sidebar-role" id="sidebar-role">Carregando...</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">?</div>
+      <div>
+        <div class="user-name" id="sidebar-name">...</div>
+        <div class="user-email" id="sidebar-email">...</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <!-- preenchido por JS -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">Sair da conta</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- ── PÁGINA: DASHBOARD AGÊNCIA ───────── -->
+    <div id="page-dashboard" class="page">
+      <div class="page-header">
+        <div class="page-title">Visão geral</div>
+        <div class="page-subtitle">Gerenciamento de todos os clientes e conteúdos</div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">Clientes ativos</div>
+          <div class="metric-value">4</div>
+          <div class="metric-badge badge-green">+1 este mês</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Conteúdos em Abril</div>
+          <div class="metric-value">52</div>
+          <div class="metric-badge badge-purple">16 agendados</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Em revisão</div>
+          <div class="metric-value">7</div>
+          <div class="metric-badge badge-amber">Aguardando aprovação</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Publicados / mês</div>
+          <div class="metric-value">36</div>
+          <div class="metric-badge badge-green">69% da meta</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Clientes</div>
+        <button class="btn-outline" onclick="openModal('modal-add-client')">+ Novo cliente</button>
+      </div>
+
+      <div class="client-grid">
+        <div class="client-card" onclick="openClient('zerbinati')">
+          <div class="client-card-header">
+            <div class="client-card-avatar" style="background:#E8F5EE; color:#1A6B4A;">RZ</div>
+            <div>
+              <div class="client-card-name">Dr. Rafael Zerbinati</div>
+              <div class="client-card-spec">Emagrecimento e Longevidade</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="tag badge-green">Ativo</span>
+            <span class="tag badge-purple">Reels</span>
+            <span class="tag badge-amber">Carrossel</span>
+          </div>
+          <div class="client-card-stats">
+            <div><div class="client-stat-label">Conteúdos / mês</div><div class="client-stat-value">16</div></div>
+            <div><div class="client-stat-label">Próx. publicação</div><div class="client-stat-value">Amanhã</div></div>
+          </div>
+        </div>
+
+        <div class="client-card" onclick="openClient('silva')">
+          <div class="client-card-header">
+            <div class="client-card-avatar" style="background:#EEEDFC; color:#4A3FA8;">PS</div>
+            <div>
+              <div class="client-card-name">Dra. Paula Silva</div>
+              <div class="client-card-spec">Dermatologia estética</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="tag badge-green">Ativo</span>
+            <span class="tag badge-blue">Feed</span>
+          </div>
+          <div class="client-card-stats">
+            <div><div class="client-stat-label">Conteúdos / mês</div><div class="client-stat-value">12</div></div>
+            <div><div class="client-stat-label">Próx. publicação</div><div class="client-stat-value">Sex, 18h</div></div>
+          </div>
+        </div>
+
+        <div class="client-card" onclick="openClient('costa')">
+          <div class="client-card-header">
+            <div class="client-card-avatar" style="background:#FDF3DC; color:#9B6B0A;">MC</div>
+            <div>
+              <div class="client-card-name">Dr. Marcos Costa</div>
+              <div class="client-card-spec">Cardiologia preventiva</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="tag badge-amber">Em pausa</span>
+          </div>
+          <div class="client-card-stats">
+            <div><div class="client-stat-label">Conteúdos / mês</div><div class="client-stat-value">8</div></div>
+            <div><div class="client-stat-label">Próx. publicação</div><div class="client-stat-value">Pausado</div></div>
+          </div>
+        </div>
+
+        <div class="client-card" onclick="openClient('ferreira')">
+          <div class="client-card-header">
+            <div class="client-card-avatar" style="background:#FCF0EE; color:#B84030;">AF</div>
+            <div>
+              <div class="client-card-name">Dra. Ana Ferreira</div>
+              <div class="client-card-spec">Nutrologia pediátrica</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="tag badge-green">Ativo</span>
+            <span class="tag badge-purple">Reels</span>
+          </div>
+          <div class="client-card-stats">
+            <div><div class="client-stat-label">Conteúdos / mês</div><div class="client-stat-value">16</div></div>
+            <div><div class="client-stat-label">Próx. publicação</div><div class="client-stat-value">Seg, 19h</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PÁGINA: CLIENTE — ZERBINATI ──────── -->
+    <div id="page-client" class="page">
+      <div class="breadcrumb">
+        <span style="cursor:pointer; color:var(--accent);" onclick="showPage('dashboard')">Clientes</span>
+        <span class="breadcrumb-sep">›</span>
+        <span id="client-breadcrumb">Dr. Rafael Zerbinati</span>
+      </div>
+      <div class="page-header">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="client-card-avatar" id="client-page-avatar" style="width:52px; height:52px; font-size:16px; background:#E8F5EE; color:#1A6B4A;">RZ</div>
+          <div>
+            <div class="page-title" id="client-page-name">Dr. Rafael Zerbinati</div>
+            <div class="page-subtitle" id="client-page-spec">Emagrecimento e Longevidade · @dr_rafaelzerbinati</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">Publicações / mês</div>
+          <div class="metric-value">16</div>
+          <div class="metric-badge badge-green">Abr 2025</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Reels</div>
+          <div class="metric-value">8</div>
+          <div class="metric-badge badge-purple">50% do mix</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Carrosséis</div>
+          <div class="metric-value">4</div>
+          <div class="metric-badge badge-green">25% do mix</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Status</div>
+          <div class="metric-value" style="font-size:1.2rem;">✓ Ativo</div>
+          <div class="metric-badge badge-green">Plano mensal</div>
+        </div>
+      </div>
+
+      <!-- Sub-tabs do cliente -->
+      <div class="tabs" id="client-subtabs" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1.5rem;">
+        <button class="tab active" onclick="showClientTab('estrategia', this)">Estratégia</button>
+        <button class="tab" onclick="showClientTab('calendario', this)">Calendário</button>
+        <button class="tab" onclick="showClientTab('conteudos', this)">Conteúdos do mês</button>
+        <button class="tab" onclick="showClientTab('roteiros', this)">Roteiros</button>
+        <button class="tab" onclick="showClientTab('pilares', this)">Pilares</button>
+        <button class="tab" onclick="showClientTab('funil', this)">Funil</button>
+        <button class="tab" onclick="showClientTab('cfm', this)">Regras CFM</button>
+      </div>
+
+      <!-- SUB: ESTRATÉGIA -->
+      <div id="ctab-estrategia" class="client-tab">
+        <div class="grid-2" style="margin-bottom:1rem;">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Posicionamento</div></div>
+            <p style="font-size:13px; color:var(--text); line-height:1.7; margin-bottom:12px;">
+              Médico especialista em emagrecimento e longevidade que traduz ciência complexa em ações práticas. Tom direto, sem modismos, com embasamento médico em cada publicação.
+            </p>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag badge-green">Autoridade médica</span>
+              <span class="tag badge-purple">Ciência aplicada</span>
+              <span class="tag badge-amber">Direto ao ponto</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Plataformas</div></div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+                <div><div style="font-size:13px; font-weight:600;">YouTube</div><div class="text-muted">Conteúdo primário — autoridade</div></div>
+                <span class="tag badge-green">Ativo</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+                <div><div style="font-size:13px; font-weight:600;">Instagram</div><div class="text-muted">Distribuição e conversão</div></div>
+                <span class="tag badge-green">Ativo</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0;">
+                <div><div style="font-size:13px; font-weight:600;">TikTok</div><div class="text-muted">Expansão futura</div></div>
+                <span class="tag badge-gray">Planejado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Objetivo de negócio</div><button class="btn-sm" onclick="openModal('modal-edit-obj')">Editar</button></div>
+          <div class="grid-3">
+            <div style="padding:12px; background:var(--surface-2); border-radius:var(--radius);">
+              <div class="text-muted" style="margin-bottom:4px;">Objetivo primário</div>
+              <div style="font-size:13px; font-weight:600;">Atrair novos pacientes</div>
+            </div>
+            <div style="padding:12px; background:var(--surface-2); border-radius:var(--radius);">
+              <div class="text-muted" style="margin-bottom:4px;">Objetivo secundário</div>
+              <div style="font-size:13px; font-weight:600;">Lançar protocolo digital</div>
+            </div>
+            <div style="padding:12px; background:var(--surface-2); border-radius:var(--radius);">
+              <div class="text-muted" style="margin-bottom:4px;">Público-alvo</div>
+              <div style="font-size:13px; font-weight:600;">Homens e mulheres 30–55a</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Bio do Instagram</div><button class="btn-sm">Copiar</button></div>
+          <div style="background:var(--surface-2); border-radius:var(--radius); padding:14px; font-family:'DM Mono', monospace; font-size:12px; line-height:2; color:var(--text);">
+            Médico | Emagrecimento e Longevidade<br>
+            CRM: XXXXXX | Irapuã-SP<br>
+            Ciência aplicada. Resultados reais.<br>
+            🔗 Agende sua consulta ou protocolo online
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB: CALENDÁRIO -->
+      <div id="ctab-calendario" class="client-tab" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="month-nav" style="flex:1; margin-bottom:0;">
+              <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+              <div class="month-title" id="cal-month-title">Abril 2025</div>
+              <button class="month-btn" onclick="changeMonth(1)">›</button>
+              <button class="btn-outline" onclick="openModal('modal-add-post')">+ Adicionar</button>
+            </div>
+          </div>
+          <div id="calendar-container">
+            <!-- gerado por JS -->
+          </div>
+          <div style="display:flex; gap:12px; margin-top:1rem; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--purple);display:inline-block;"></span><span class="text-muted">Reels</span></div>
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--accent);display:inline-block;"></span><span class="text-muted">Carrossel</span></div>
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#E0A030;display:inline-block;"></span><span class="text-muted">Stories</span></div>
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--blue);display:inline-block;"></span><span class="text-muted">Feed</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB: CONTEÚDOS DO MÊS -->
+      <div id="ctab-conteudos" class="client-tab" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Conteúdos — Abril 2025</div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-sm">Exportar PDF</button>
+              <button class="btn-sm" onclick="openModal('modal-add-post')">+ Novo</button>
+            </div>
+          </div>
+          <table class="content-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Formato</th>
+                <th>Pilar</th>
+                <th>Título</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="content-table-body">
+              <!-- gerado por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SUB: ROTEIROS -->
+      <div id="ctab-roteiros" class="client-tab" style="display:none;">
+        <div class="alert alert-info" style="margin-bottom:1.5rem;">
+          Roteiros prontos para gravar. Clique para expandir cada um e ver o script completo.
+        </div>
+
+        <div class="roteiro-card" id="rot1">
+          <div class="roteiro-header" onclick="toggleRoteiro('rot1')">
+            <div class="roteiro-header-left">
+              <div class="roteiro-type-icon" style="background:var(--purple-light);">🎬</div>
+              <div>
+                <div class="roteiro-title">Reels 1 — Por que você não emagrece (mesmo fazendo tudo certo)</div>
+                <div class="roteiro-meta">Pilar: Educação científica · 60s · Publicar: Terça 01/04 às 19h</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="status-pill status-agendado">Agendado</span>
+              <span class="roteiro-chevron">▾</span>
+            </div>
+          </div>
+          <div class="roteiro-body">
+            <div class="script-block hook">
+              <div class="script-label">Hook · 0–3s</div>
+              <div class="script-text">"Você come pouco, treina, bebe água — e a balança não sai do lugar. Sabe por quê?"</div>
+              <div class="script-timing">Texto na tela: VOCÊ FAZ TUDO CERTO E NÃO EMAGRECE?</div>
+            </div>
+            <div class="script-block ponte">
+              <div class="script-label">Ponte · 3–6s</div>
+              <div class="script-text">"O problema provavelmente não é o que você come. É o que está acontecendo dentro do seu metabolismo."</div>
+            </div>
+            <div class="script-block dev">
+              <div class="script-label">Desenvolvimento · 6–52s</div>
+              <div class="script-text">
+                <strong>Motivo 1 — Cortisol elevado (10s):</strong> Estresse crônico sinaliza ao corpo para segurar gordura. É um mecanismo de sobrevivência. Sem gerenciar estresse, não tem dieta que funcione.<br><br>
+                <strong>Motivo 2 — Resistência à insulina (10s):</strong> Mesmo sem diabetes, muita gente tem células resistentes. A glicose não entra nas células, vira gordura. Exame de insulina em jejum revela isso.<br><br>
+                <strong>Motivo 3 — Sono fragmentado (10s):</strong> Menos de 7h altera grelina e leptina — os hormônios da fome. Você acorda com mais fome e menos saciedade. Literalmente um sabotador hormonal.
+              </div>
+              <div class="script-timing">3 cenas · corte a cada ~10s · câmera frontal · texto com cada tópico</div>
+            </div>
+            <div class="script-block cta">
+              <div class="script-label">CTA · 52–60s</div>
+              <div class="script-text">"Salva esse vídeo. Se identificou com algum desses três pontos, comenta qual. Posso te ajudar com o protocolo certo."</div>
+              <div class="script-timing">Texto na tela: SALVA · Trilha: lo-fi suave, volume baixo</div>
+            </div>
+            <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap;">
+              <span class="tag badge-purple">#emagrecimento</span>
+              <span class="tag badge-purple">#metabolismo</span>
+              <span class="tag badge-purple">#medicinalongevidade</span>
+              <span class="tag badge-purple">#cortisol</span>
+              <span class="tag badge-purple">#dr_rafaelzerbinati</span>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button class="btn-sm">Editar roteiro</button>
+              <button class="btn-sm">Copiar script</button>
+              <button class="btn-sm">Marcar como gravado</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="roteiro-card" id="rot2">
+          <div class="roteiro-header" onclick="toggleRoteiro('rot2')">
+            <div class="roteiro-header-left">
+              <div class="roteiro-type-icon" style="background:var(--accent-light);">📋</div>
+              <div>
+                <div class="roteiro-title">Carrossel 1 — 7 hábitos médicos de longevidade</div>
+                <div class="roteiro-meta">Pilar: Longevidade prática · 7 slides · Publicar: Quarta 02/04 às 12h</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="status-pill status-rascunho">Rascunho</span>
+              <span class="roteiro-chevron">▾</span>
+            </div>
+          </div>
+          <div class="roteiro-body">
+            <div class="script-block hook">
+              <div class="script-label">Slide 1 — Capa</div>
+              <div class="script-text">"7 hábitos que médicos de longevidade têm todo dia (e você provavelmente ignora)"</div>
+              <div class="script-timing">Texto em destaque · Fundo escuro · Nome e CRM no rodapé</div>
+            </div>
+            <div class="script-block dev">
+              <div class="script-label">Slides 2–7 — Conteúdo</div>
+              <div class="script-text">
+                <strong>1. Jejum circadiano:</strong> Janela alimentar de 8–10h. Reduz inflamação e melhora sensibilidade à insulina.<br>
+                <strong>2. Treino de força:</strong> Músculo é órgão endócrino. Produz mioquinas anti-inflamatórias e protege contra sarcopenia.<br>
+                <strong>3. Sono de 7–9h:</strong> Janela de regeneração celular, consolidação de memória e equilíbrio hormonal.<br>
+                <strong>4. Gestão do cortisol:</strong> 10 min de respiração diafragmática reduz cortisol em 20%. Ciência, não meditação mística.<br>
+                <strong>5. Proteína em cada refeição:</strong> 30–40g por refeição mantém músculo e sacia por mais tempo.<br>
+                <strong>6. Check-up anual completo:</strong> Insulina em jejum, PCR ultrassensível, testosterona, TSH. O básico que a maioria não faz.
+              </div>
+            </div>
+            <div class="script-block cta">
+              <div class="script-label">Slide 7 — CTA</div>
+              <div class="script-text">"Salva esse carrossel e manda pra alguém que precisa ver isso hoje."</div>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button class="btn-sm">Editar</button>
+              <button class="btn-sm">Copiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="roteiro-card" id="rot3">
+          <div class="roteiro-header" onclick="toggleRoteiro('rot3')">
+            <div class="roteiro-header-left">
+              <div class="roteiro-type-icon" style="background:var(--purple-light);">🎬</div>
+              <div>
+                <div class="roteiro-title">Reels 2 — Mito: gordura engorda</div>
+                <div class="roteiro-meta">Pilar: Emagrecimento médico · 45s · Publicar: Quinta 03/04 às 19h</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="status-pill status-revisao">Em revisão</span>
+              <span class="roteiro-chevron">▾</span>
+            </div>
+          </div>
+          <div class="roteiro-body">
+            <div class="script-block hook">
+              <div class="script-label">Hook · 0–3s</div>
+              <div class="script-text">"Isso que você acredita sobre gordura pode estar sabotando seu emagrecimento há anos."</div>
+              <div class="script-timing">Texto na tela: MITO QUE AINDA CIRCULA em 2025</div>
+            </div>
+            <div class="script-block dev">
+              <div class="script-label">Desenvolvimento · 3–40s</div>
+              <div class="script-text">
+                Mito: "gordura engorda, então eu evito". Verdade médica: gordura saudável — azeite, abacate, oleaginosas — regula hormônios, reduz inflamação e aumenta saciedade. O que realmente gera acúmulo de gordura é excesso de carboidrato refinado + insulina cronicamente alta.
+              </div>
+            </div>
+            <div class="script-block cta">
+              <div class="script-label">CTA · 40–45s</div>
+              <div class="script-text">"Comenta MITO se você ainda acreditava nisso. Mais desses no meu perfil."</div>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button class="btn-sm">Editar</button>
+              <button class="btn-sm">Aprovar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stories de aquecimento -->
+        <div style="margin-top:1.5rem; margin-bottom:1rem;">
+          <div class="section-title">Stories de aquecimento (modelo semanal)</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Sequência de 3 stories · Dia anterior ao Reel · 19h</div></div>
+          <div class="script-block story">
+            <div class="script-label">Story 1 — Enquete (curiosidade)</div>
+            <div class="script-text">"Você sabe por que a maioria das dietas falha depois de 3 meses?"</div>
+            <div class="script-timing">Recurso: Enquete — SIM / NÃO</div>
+          </div>
+          <div class="script-block story">
+            <div class="script-label">Story 2 — Câmera (aprofundamento)</div>
+            <div class="script-text">"Amanhã vou te mostrar os 3 motivos médicos reais por trás disso. É mais simples do que parece."</div>
+            <div class="script-timing">Recurso: Caixa de perguntas — "Me conta sua dificuldade"</div>
+          </div>
+          <div class="script-block story">
+            <div class="script-label">Story 3 — Direcionamento</div>
+            <div class="script-text">"O vídeo vai sair amanhã às 19h no feed. Salva quando ver."</div>
+            <div class="script-timing">Recurso: Contagem regressiva</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB: PILARES -->
+      <div id="ctab-pilares" class="client-tab" style="display:none;">
+        <div class="pilares-grid">
+          <div class="pilar-card teal">
+            <div class="pilar-num">Pilar 1</div>
+            <div class="pilar-title">Educação científica</div>
+            <div class="pilar-desc">Desmistificar mitos sobre dieta, gordura, hormônios e metabolismo com embasamento médico. Base da autoridade do canal.</div>
+            <div class="pilar-formats">
+              <span class="format-tag">Reels 60s</span>
+              <span class="format-tag">Carrossel</span>
+              <span class="format-tag">Story "você sabia?"</span>
+            </div>
+          </div>
+          <div class="pilar-card purple">
+            <div class="pilar-num">Pilar 2</div>
+            <div class="pilar-title">Longevidade prática</div>
+            <div class="pilar-desc">Hábitos concretos, exames preventivos, sono, estresse e qualidade de vida com protocolos aplicáveis.</div>
+            <div class="pilar-formats">
+              <span class="format-tag">Carrossel lista</span>
+              <span class="format-tag">Reels checklist</span>
+              <span class="format-tag">Story interativo</span>
+            </div>
+          </div>
+          <div class="pilar-card amber">
+            <div class="pilar-num">Pilar 3</div>
+            <div class="pilar-title">Emagrecimento médico</div>
+            <div class="pilar-desc">Por que dietas falham, como funciona o metabolismo, diferença entre abordagem médica e modismos populares.</div>
+            <div class="pilar-formats">
+              <span class="format-tag">Reels mito/verdade</span>
+              <span class="format-tag">Carrossel protocolo</span>
+              <span class="format-tag">Story resultado</span>
+            </div>
+          </div>
+          <div class="pilar-card coral">
+            <div class="pilar-num">Pilar 4</div>
+            <div class="pilar-title">Bastidores e humanização</div>
+            <div class="pilar-desc">Rotina do médico, casos anonimizados, jornada pessoal e narrativa do Dr. Zerbinati como profissional e pessoa.</div>
+            <div class="pilar-formats">
+              <span class="format-tag">Story rotina</span>
+              <span class="format-tag">Reels leve</span>
+              <span class="format-tag">Caixa de perguntas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Cronograma semanal tipo</div></div>
+          <div id="week-schedule-container"><!-- gerado por JS --></div>
+        </div>
+      </div>
+
+      <!-- SUB: FUNIL -->
+      <div id="ctab-funil" class="client-tab" style="display:none;">
+        <div class="funil-visual">
+          <div class="funil-step-row">
+            <div class="funil-step-num" style="background:var(--accent-light); color:var(--accent);">1</div>
+            <div class="funil-step-content">
+              <div class="funil-step-title">YouTube — autoridade profunda</div>
+              <div class="funil-step-desc">Vídeos longos educativos constroem confiança máxima. Público pesquisa ativamente temas de emagrecimento e longevidade. Canal alimenta o Instagram.</div>
+            </div>
+            <span class="funil-step-tag" style="color:var(--accent);">Topo</span>
+          </div>
+          <div class="funil-step-row">
+            <div class="funil-step-num" style="background:var(--purple-light); color:var(--purple);">2</div>
+            <div class="funil-step-content">
+              <div class="funil-step-title">Reels — distribuição e alcance rápido</div>
+              <div class="funil-step-desc">Cortes do YouTube viram Reels de 30–60s. Alcança quem ainda não conhece o canal. Novo público descobre o Dr. Zerbinati. 3–4 por semana.</div>
+            </div>
+            <span class="funil-step-tag" style="color:var(--purple);">Meio</span>
+          </div>
+          <div class="funil-step-row">
+            <div class="funil-step-num" style="background:var(--amber-light); color:var(--amber);">3</div>
+            <div class="funil-step-content">
+              <div class="funil-step-title">Carrosséis e Stories — nutrição e relacionamento</div>
+              <div class="funil-step-desc">Quem curtiu o Reel permanece nos carrosséis e stories. Cria o hábito de acompanhar. Caixa de perguntas gera DMs e qualifica leads.</div>
+            </div>
+            <span class="funil-step-tag" style="color:var(--amber);">Meio</span>
+          </div>
+          <div class="funil-step-row">
+            <div class="funil-step-num" style="background:var(--coral-light); color:var(--coral);">4</div>
+            <div class="funil-step-content">
+              <div class="funil-step-title">Bio + Link — conversão para consulta ou produto</div>
+              <div class="funil-step-desc">Bio com CTA direto. Link para agendamento, WhatsApp ou produto digital. Cada publicação empurra para esse passo com call-to-action.</div>
+            </div>
+            <span class="funil-step-tag" style="color:var(--coral);">Fundo</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Monetização</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:13px;">Consultas presenciais</span>
+                <span class="tag badge-green">Principal</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:13px;">Teleconsultas</span>
+                <span class="tag badge-green">Ativo</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:13px;">Protocolo digital</span>
+                <span class="tag badge-amber">Em desenvolvimento</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0;">
+                <span style="font-size:13px;">Curso online</span>
+                <span class="tag badge-gray">Planejado</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">CTAs ativos</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
+              <div style="padding:8px 12px; background:var(--surface-2); border-radius:var(--radius);">💬 "Comenta sua dúvida abaixo"</div>
+              <div style="padding:8px 12px; background:var(--surface-2); border-radius:var(--radius);">💾 "Salva esse vídeo para não perder"</div>
+              <div style="padding:8px 12px; background:var(--surface-2); border-radius:var(--radius);">📩 "Me manda mensagem para saber mais"</div>
+              <div style="padding:8px 12px; background:var(--surface-2); border-radius:var(--radius);">🔗 "Link na bio para agendar"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB: CFM -->
+      <div id="ctab-cfm" class="client-tab" style="display:none;">
+        <div class="alert alert-success">
+          Todas as regras do CFM para publicidade médica nas redes sociais. Verifique antes de aprovar qualquer conteúdo.
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title" style="color:var(--accent);">✓ Permitido</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Conteúdo educativo e informativo sobre saúde</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Identificar CRM e especialidade em cada post</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Compartilhar estudos com fonte científica</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Mostrar rotina e bastidores profissionais</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Divulgar horários e formas de contato</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0;"><span style="color:var(--accent); font-weight:600; flex-shrink:0;">✓</span><span>Collabs com outros profissionais de saúde</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title" style="color:var(--coral);">✕ Proibido (CFM)</div></div>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Fotos de antes e depois de pacientes</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Divulgar preços de consultas/procedimentos</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Prometer resultados específicos garantidos</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Depoimentos de pacientes identificados</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Indicar medicamentos ou doses diretamente</span></div>
+              <div style="display:flex; gap:10px; padding:8px 0;"><span style="color:var(--coral); font-weight:600; flex-shrink:0;">✕</span><span>Associar serviço médico a ganho estético garantido</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Disclaimer obrigatório</div><button class="btn-sm">Copiar texto</button></div>
+          <div style="background:var(--surface-2); border-radius:var(--radius); padding:14px; font-size:13px; font-style:italic; color:var(--text-2); line-height:1.7;">
+            "Este conteúdo é de caráter exclusivamente informativo e educativo. Não substitui a consulta médica individualizada. Consulte um profissional de saúde antes de iniciar qualquer tratamento."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PÁGINA: TODOS OS CONTEÚDOS ────────── -->
+    <div id="page-all-content" class="page">
+      <div class="page-header">
+        <div class="page-title">Todos os conteúdos</div>
+        <div class="page-subtitle">Visão consolidada de todos os clientes</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Fila de publicação — Próximos 7 dias</div>
+          <button class="btn-outline">Filtrar</button>
+        </div>
+        <table class="content-table">
+          <thead>
+            <tr><th>Data</th><th>Cliente</th><th>Formato</th><th>Título</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-family:'DM Mono', monospace; font-size:12px;">01/04 · 19h</span></td>
+              <td><span class="tag badge-green">Dr. Zerbinati</span></td>
+              <td><span class="content-type-pill" style="background:var(--purple-light); color:var(--purple);">🎬 Reels</span></td>
+              <td>Por que você não emagrece (mesmo fazendo tudo certo)</td>
+              <td><span class="status-pill status-agendado">Agendado</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:'DM Mono', monospace; font-size:12px;">02/04 · 12h</span></td>
+              <td><span class="tag badge-green">Dr. Zerbinati</span></td>
+              <td><span class="content-type-pill" style="background:var(--accent-light); color:var(--accent);">📋 Carrossel</span></td>
+              <td>7 hábitos médicos de longevidade</td>
+              <td><span class="status-pill status-rascunho">Rascunho</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:'DM Mono', monospace; font-size:12px;">03/04 · 19h</span></td>
+              <td><span class="tag badge-green">Dr. Zerbinati</span></td>
+              <td><span class="content-type-pill" style="background:var(--purple-light); color:var(--purple);">🎬 Reels</span></td>
+              <td>Mito: gordura engorda</td>
+              <td><span class="status-pill status-revisao">Em revisão</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:'DM Mono', monospace; font-size:12px;">04/04 · 12h</span></td>
+              <td><span class="tag badge-purple">Dra. Ferreira</span></td>
+              <td><span class="content-type-pill" style="background:var(--purple-light); color:var(--purple);">🎬 Reels</span></td>
+              <td>Alimentação saudável na infância</td>
+              <td><span class="status-pill status-ok">Aprovado</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family:'DM Mono', monospace; font-size:12px;">05/04 · 12h</span></td>
+              <td><span class="tag badge-green">Dr. Zerbinati</span></td>
+              <td><span class="content-type-pill" style="background:var(--accent-light); color:var(--accent);">📋 Carrossel</span></td>
+              <td>Bastidores: um dia no consultório</td>
+              <td><span class="status-pill status-rascunho">Rascunho</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── PÁGINA: CONFIGURAÇÕES ─────────────── -->
+    <div id="page-settings" class="page">
+      <div class="page-header">
+        <div class="page-title">Configurações</div>
+        <div class="page-subtitle">Preferências da conta e da plataforma</div>
+      </div>
+
+      <div class="card">
+        <div class="settings-section">
+          <div class="settings-title">Conta</div>
+          <div class="settings-row">
+            <div><div class="settings-label">Nome da agência</div></div>
+            <button class="btn-sm">Editar</button>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">E-mail</div><div class="settings-desc">agencia@contentmd.com</div></div>
+            <button class="btn-sm">Alterar</button>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">Senha</div></div>
+            <button class="btn-sm">Alterar</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title">Notificações</div>
+          <div class="settings-row">
+            <div><div class="settings-label">Alertas de conteúdo em revisão</div><div class="settings-desc">Notificar quando cliente precisar aprovar</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">Lembrete de publicação</div><div class="settings-desc">1h antes de cada post agendado</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">Relatório semanal</div><div class="settings-desc">Resumo toda segunda-feira às 9h</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PÁGINA: DASHBOARD CLIENTE ─────────── -->
+    <div id="page-client-home" class="page">
+      <div class="page-header">
+        <div class="page-title">Meu planejamento</div>
+        <div class="page-subtitle">Dr. Rafael Zerbinati · @dr_rafaelzerbinati</div>
+      </div>
+
+      <div class="alert alert-info">
+        Você está visualizando seu planejamento de conteúdo. Para editar ou aprovar conteúdos, use as abas abaixo.
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">Publicações este mês</div>
+          <div class="metric-value">16</div>
+          <div class="metric-badge badge-green">Abril 2025</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Em revisão</div>
+          <div class="metric-value">2</div>
+          <div class="metric-badge badge-amber">Aguardando você</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Próxima publicação</div>
+          <div class="metric-value" style="font-size:1rem; padding-top:6px;">Amanhã 19h</div>
+          <div class="metric-badge badge-purple">Reels</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Roteiros prontos</div>
+          <div class="metric-value">3</div>
+          <div class="metric-badge badge-green">Semana 1</div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:1.5rem;">
+        <div class="section-title">Conteúdos aguardando aprovação</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid var(--amber-light); border-radius:var(--radius); background:var(--amber-light);">
+            <div style="font-size:20px;">📋</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:600;">Carrossel — 7 hábitos médicos de longevidade</div>
+              <div style="font-size:12px; color:var(--text-3); margin-top:2px;">Quarta 02/04 · 12h · Pilar: Longevidade prática</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-sm" style="border-color:var(--accent); color:var(--accent);">Aprovar</button>
+              <button class="btn-sm danger">Revisar</button>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px; padding:12px; border:1px solid var(--coral-light); border-radius:var(--radius); background:var(--coral-light);">
+            <div style="font-size:20px;">🎬</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:600;">Reels — Mito: gordura engorda</div>
+              <div style="font-size:12px; color:var(--text-3); margin-top:2px;">Quinta 03/04 · 19h · Pilar: Emagrecimento médico</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-sm" style="border-color:var(--accent); color:var(--accent);">Aprovar</button>
+              <button class="btn-sm danger">Revisar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<!-- MODAL: Adicionar cliente -->
+<div id="modal-add-client" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Novo cliente</div>
+      <button class="modal-close" onclick="closeModal('modal-add-client')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Nome completo</label><input type="text" placeholder="Dr. João Silva"></div>
+      <div class="form-group"><label>Especialidade</label><input type="text" placeholder="Ex: Cardiologia preventiva"></div>
+      <div class="form-group"><label>Instagram</label><input type="text" placeholder="@usuario"></div>
+      <div class="form-group"><label>E-mail de acesso</label><input type="email" placeholder="dr@email.com"></div>
+      <div class="form-group"><label>Nicho principal</label>
+        <select>
+          <option>Emagrecimento e Longevidade</option>
+          <option>Dermatologia estética</option>
+          <option>Saúde da mulher</option>
+          <option>Cardiologia preventiva</option>
+          <option>Nutrologia</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Publicações / mês</label><input type="number" value="16"></div>
+        <div class="form-group"><label>Plano</label><select><option>Mensal</option><option>Trimestral</option><option>Anual</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal('modal-add-client')">Cancelar</button>
+      <button class="btn-primary" style="width:auto; padding:8px 20px;" onclick="closeModal('modal-add-client')">Salvar cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Adicionar post -->
+<div id="modal-add-post" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova publicação</div>
+      <button class="modal-close" onclick="closeModal('modal-add-post')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Título / Tema</label><input type="text" placeholder="Tema do conteúdo"></div>
+      <div class="grid-2">
+        <div class="form-group"><label>Formato</label>
+          <select><option>Reels</option><option>Carrossel</option><option>Feed (imagem)</option><option>Story</option></select>
+        </div>
+        <div class="form-group"><label>Pilar</label>
+          <select><option>Educação científica</option><option>Longevidade prática</option><option>Emagrecimento médico</option><option>Bastidores</option></select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Data</label><input type="date"></div>
+        <div class="form-group"><label>Horário</label><input type="time" value="19:00"></div>
+      </div>
+      <div class="form-group"><label>Roteiro / Descrição</label><textarea rows="4" placeholder="Hook, desenvolvimento, CTA..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal('modal-add-post')">Cancelar</button>
+      <button class="btn-primary" style="width:auto; padding:8px 20px;" onclick="closeModal('modal-add-post')">Salvar publicação</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Editar objetivo -->
+<div id="modal-edit-obj" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Editar objetivos — Dr. Zerbinati</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-obj')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Objetivo primário</label><input type="text" value="Atrair novos pacientes"></div>
+      <div class="form-group"><label>Objetivo secundário</label><input type="text" value="Lançar protocolo digital"></div>
+      <div class="form-group"><label>Público-alvo</label><input type="text" value="Homens e mulheres 30–55 anos"></div>
+      <div class="form-group"><label>Tom de voz</label>
+        <select><option selected>Direto e científico</option><option>Empático e educativo</option><option>Inspiracional</option><option>Técnico-profissional</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal('modal-edit-obj')">Cancelar</button>
+      <button class="btn-primary" style="width:auto; padding:8px 20px;" onclick="closeModal('modal-edit-obj')">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+// DADOS
+// ─────────────────────────────────────────
+const STATE = {
+  user: null, // 'agency' | 'client'
+  activeClient: 'zerbinati',
+  currentMonth: new Date(2025, 3, 1), // April 2025
+};
+
+const USERS = {
+  agency: { email: 'agencia@contentmd.com', pass: '123456', name: 'ContentMD Agency', role: 'Gestão — Agência', initials: 'AG' },
+  client: { email: 'dr@zerbinati.com.br', pass: '123456', name: 'Dr. Rafael Zerbinati', role: 'Cliente — Médico', initials: 'RZ' },
+};
+
+const CONTENT_POSTS = [
+  { date: '01/04', time:'19h', format:'Reels', pilar:'Educação científica', title:'Por que você não emagrece (mesmo fazendo tudo certo)', status:'agendado' },
+  { date: '02/04', time:'12h', format:'Carrossel', pilar:'Longevidade prática', title:'7 hábitos médicos de longevidade', status:'rascunho' },
+  { date: '03/04', time:'19h', format:'Reels', pilar:'Emagrecimento médico', title:'Mito: gordura engorda', status:'revisao' },
+  { date: '05/04', time:'12h', format:'Carrossel', pilar:'Bastidores', title:'Bastidores: um dia no consultório', status:'rascunho' },
+  { date: '08/04', time:'19h', format:'Reels', pilar:'Educação científica', title:'Resistência à insulina: o que ninguém te conta', status:'rascunho' },
+  { date: '09/04', time:'12h', format:'Carrossel', pilar:'Longevidade prática', title:'Exames que todo adulto precisa fazer', status:'rascunho' },
+  { date: '10/04', time:'19h', format:'Reels', pilar:'Emagrecimento médico', title:'Por que dietas de 1.200 calorias destroem o metabolismo', status:'rascunho' },
+  { date: '12/04', time:'10h', format:'Reels', pilar:'Bastidores', title:'Minha rotina como médico: 6h às 22h', status:'rascunho' },
+  { date: '15/04', time:'19h', format:'Reels', pilar:'Educação científica', title:'Cortisol: o hormônio que sabota seu peso', status:'rascunho' },
+  { date: '16/04', time:'12h', format:'Carrossel', pilar:'Longevidade prática', title:'Como melhorar o sono em 7 dias', status:'rascunho' },
+  { date: '17/04', time:'19h', format:'Reels', pilar:'Emagrecimento médico', title:'Semaglutida: o que a mídia não explica', status:'rascunho' },
+  { date: '22/04', time:'19h', format:'Reels', pilar:'Educação científica', title:'Testosterona baixa: sintomas que homens ignoram', status:'rascunho' },
+  { date: '23/04', time:'12h', format:'Carrossel', pilar:'Longevidade prática', title:'Protocolo de saúde preventiva após os 35', status:'rascunho' },
+  { date: '24/04', time:'19h', format:'Reels', pilar:'Emagrecimento médico', title:'Inflamação silenciosa: por que você está cansado', status:'rascunho' },
+  { date: '26/04', time:'10h', format:'Reels', pilar:'Bastidores', title:'Respondendo dúvidas de pacientes', status:'rascunho' },
+  { date: '29/04', time:'19h', format:'Reels', pilar:'Educação científica', title:'PCR ultrassensível: o exame que revela tudo', status:'rascunho' },
+];
+
+const CAL_POSTS = {
+  1: [{type:'reel', text:'Reels 19h'}],
+  2: [{type:'carrossel', text:'Carrossel 12h'}],
+  3: [{type:'reel', text:'Reels 19h'}],
+  5: [{type:'carrossel', text:'Carrossel 12h'}, {type:'story', text:'Stories'}],
+  7: [{type:'story', text:'Stories aq.'}],
+  8: [{type:'reel', text:'Reels 19h'}],
+  9: [{type:'carrossel', text:'Carrossel 12h'}],
+  10: [{type:'reel', text:'Reels 19h'}],
+  12: [{type:'reel', text:'Reels 10h'}],
+  14: [{type:'story', text:'Stories aq.'}],
+  15: [{type:'reel', text:'Reels 19h'}],
+  16: [{type:'carrossel', text:'Carrossel 12h'}],
+  17: [{type:'reel', text:'Reels 19h'}],
+  19: [{type:'reel', text:'Reels 10h'}],
+  21: [{type:'story', text:'Stories aq.'}],
+  22: [{type:'reel', text:'Reels 19h'}],
+  23: [{type:'carrossel', text:'Carrossel 12h'}],
+  24: [{type:'reel', text:'Reels 19h'}],
+  26: [{type:'reel', text:'Reels 10h'}],
+  29: [{type:'reel', text:'Reels 19h'}],
+  30: [{type:'carrossel', text:'Carrossel 12h'}],
+};
+
+// ─────────────────────────────────────────
+// LOGIN
+// ─────────────────────────────────────────
+let loginType = 'agency';
+
+function selectLoginType(type, el) {
+  loginType = type;
+  document.querySelectorAll('.login-type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const emailInput = document.getElementById('login-email');
+  const passInput = document.getElementById('login-password');
+  if (type === 'agency') {
+    emailInput.value = 'agencia@contentmd.com';
+    passInput.value = '123456';
+  } else {
+    emailInput.value = 'dr@zerbinati.com.br';
+    passInput.value = '123456';
+  }
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value.trim();
+  let user = null;
+  if (email === USERS.agency.email && pass === USERS.agency.pass) user = 'agency';
+  else if (email === USERS.client.email && pass === USERS.client.pass) user = 'client';
+  if (!user) { alert('Email ou senha incorretos.\n\nAgência: agencia@contentmd.com / 123456\nMédico: dr@zerbinati.com.br / 123456'); return; }
+  STATE.user = user;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  setupApp(user);
+}
+
+function doLogout() {
+  STATE.user = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ─────────────────────────────────────────
+// APP SETUP
+// ─────────────────────────────────────────
+function setupApp(role) {
+  const u = USERS[role];
+  document.getElementById('sidebar-role').textContent = u.role;
+  document.getElementById('sidebar-name').textContent = u.name;
+  document.getElementById('sidebar-email').textContent = u.email;
+  document.getElementById('sidebar-avatar').textContent = u.initials;
+
+  const nav = document.getElementById('sidebar-nav');
+  if (role === 'agency') {
+    nav.innerHTML = `
+      <div class="nav-section-label">Gestão</div>
+      <button class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">◉</span> Visão geral<span class="nav-badge">4</span></button>
+      <button class="nav-item" onclick="showPage('all-content')"><span class="nav-icon">📅</span> Todos os conteúdos</button>
+      <div class="nav-section-label">Clientes</div>
+      <div class="client-item active" onclick="openClient('zerbinati')">
+        <div class="client-avatar" style="background:#E8F5EE; color:#1A6B4A; font-size:10px; font-weight:600;">RZ</div>
+        <div class="client-info"><div class="client-name">Dr. Zerbinati</div><div class="client-spec">Emagrecimento</div></div>
+      </div>
+      <div class="client-item" onclick="openClient('silva')">
+        <div class="client-avatar" style="background:#EEEDFC; color:#4A3FA8; font-size:10px; font-weight:600;">PS</div>
+        <div class="client-info"><div class="client-name">Dra. Paula Silva</div><div class="client-spec">Dermatologia</div></div>
+      </div>
+      <div class="client-item" onclick="openClient('costa')">
+        <div class="client-avatar" style="background:#FDF3DC; color:#9B6B0A; font-size:10px; font-weight:600;">MC</div>
+        <div class="client-info"><div class="client-name">Dr. Marcos Costa</div><div class="client-spec">Cardiologia</div></div>
+      </div>
+      <div class="client-item" onclick="openClient('ferreira')">
+        <div class="client-avatar" style="background:#FCF0EE; color:#B84030; font-size:10px; font-weight:600;">AF</div>
+        <div class="client-info"><div class="client-name">Dra. Ana Ferreira</div><div class="client-spec">Nutrologia ped.</div></div>
+      </div>
+      <div class="nav-section-label">Config</div>
+      <button class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙</span> Configurações</button>
+    `;
+    showPage('dashboard');
+  } else {
+    nav.innerHTML = `
+      <div class="nav-section-label">Meu conteúdo</div>
+      <button class="nav-item active" onclick="showPage('client-home')"><span class="nav-icon">◉</span> Início</button>
+      <div class="nav-section-label">Planejamento</div>
+      <button class="nav-item" onclick="openClientTab2('estrategia')"><span class="nav-icon">◈</span> Estratégia</button>
+      <button class="nav-item" onclick="openClientTab2('calendario')"><span class="nav-icon">📅</span> Calendário</button>
+      <button class="nav-item" onclick="openClientTab2('conteudos')"><span class="nav-icon">📋</span> Conteúdos do mês</button>
+      <button class="nav-item" onclick="openClientTab2('roteiros')"><span class="nav-icon">🎬</span> Roteiros</button>
+      <button class="nav-item" onclick="openClientTab2('pilares')"><span class="nav-icon">◩</span> Pilares</button>
+      <button class="nav-item" onclick="openClientTab2('funil')"><span class="nav-icon">▽</span> Funil</button>
+    `;
+    showPage('client-home');
+  }
+
+  buildContentTable();
+  buildCalendar();
+  buildWeekSchedule();
+}
+
+// ─────────────────────────────────────────
+// NAVEGAÇÃO
+// ─────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function openClient(id) {
+  STATE.activeClient = id;
+  showPage('client');
+  showClientTab('estrategia', null);
+}
+
+function openClientTab2(tabName) {
+  openClient('zerbinati');
+  setTimeout(() => showClientTab(tabName, null), 50);
+}
+
+function showClientTab(tabName, btnEl) {
+  document.querySelectorAll('.client-tab').forEach(t => { t.style.display = 'none'; });
+  const target = document.getElementById('ctab-' + tabName);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('#client-subtabs .tab').forEach(b => b.classList.remove('active'));
+  if (btnEl) {
+    btnEl.classList.add('active');
+  } else {
+    document.querySelectorAll('#client-subtabs .tab').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + tabName + "'")) {
+        b.classList.add('active');
+      }
+    });
+  }
+  if (tabName === 'calendario') buildCalendar();
+  if (tabName === 'pilares') buildWeekSchedule();
+}
+
+// ─────────────────────────────────────────
+// CALENDÁRIO
+// ─────────────────────────────────────────
+function changeMonth(dir) {
+  STATE.currentMonth = new Date(STATE.currentMonth.getFullYear(), STATE.currentMonth.getMonth() + dir, 1);
+  buildCalendar();
+}
+
+function buildCalendar() {
+  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const m = STATE.currentMonth;
+  document.getElementById('cal-month-title').textContent = months[m.getMonth()] + ' ' + m.getFullYear();
+  const firstDay = new Date(m.getFullYear(), m.getMonth(), 1).getDay();
+  const daysInMonth = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+  const today = new Date();
+  const isThisMonth = today.getFullYear() === m.getFullYear() && today.getMonth() === m.getMonth();
+
+  let html = '<div class="calendar-grid">';
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = isThisMonth && today.getDate() === d;
+    html += `<div class="cal-day${isToday ? ' today' : ''}">`;
+    html += `<div class="cal-day-num">${d}</div>`;
+    const posts = CAL_POSTS[d] || [];
+    posts.forEach(p => {
+      const cls = p.type === 'reel' ? 'cal-post-reel' : p.type === 'carrossel' ? 'cal-post-carrossel' : p.type === 'story' ? 'cal-post-story' : 'cal-post-feed';
+      html += `<span class="cal-post ${cls}">${p.text}</span>`;
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+  document.getElementById('calendar-container').innerHTML = html;
+}
+
+// ─────────────────────────────────────────
+// TABELA DE CONTEÚDOS
+// ─────────────────────────────────────────
+function buildContentTable() {
+  const statusMap = {
+    agendado: '<span class="status-pill status-agendado">Agendado</span>',
+    rascunho: '<span class="status-pill status-rascunho">Rascunho</span>',
+    revisao:  '<span class="status-pill status-revisao">Em revisão</span>',
+    ok:       '<span class="status-pill status-ok">Aprovado</span>',
+  };
+  const formatMap = {
+    Reels:    '<span class="content-type-pill" style="background:var(--purple-light); color:var(--purple);">🎬 Reels</span>',
+    Carrossel:'<span class="content-type-pill" style="background:var(--accent-light); color:var(--accent);">📋 Carrossel</span>',
+  };
+  let html = '';
+  CONTENT_POSTS.forEach(p => {
+    html += `<tr>
+      <td><span style="font-family:'DM Mono',monospace; font-size:12px;">${p.date} · ${p.time}</span></td>
+      <td>${formatMap[p.format] || p.format}</td>
+      <td><span class="text-muted">${p.pilar}</span></td>
+      <td style="max-width:260px;">${p.title}</td>
+      <td>${statusMap[p.status] || p.status}</td>
+      <td><button class="btn-sm">Ver</button></td>
+    </tr>`;
+  });
+  const el = document.getElementById('content-table-body');
+  if (el) el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────
+// SEMANA TIPO
+// ─────────────────────────────────────────
+function buildWeekSchedule() {
+  const slots = [
+    { time:'12h', seg:{type:'',title:''}, ter:{type:'',title:''}, qua:{type:'carrossel',title:'Carrossel',sub:'Longevidade / protocolo'}, qui:{type:'',title:''}, sex:{type:'carrossel',title:'Carrossel',sub:'Bastidores'}, sab:{type:'',title:''}, dom:{type:'rest',title:'Descanso',sub:''} },
+    { time:'19h', seg:{type:'story',title:'Stories',sub:'Aquecimento'}, ter:{type:'reel',title:'Reels',sub:'Educação científica'}, qua:{type:'story',title:'Stories',sub:'Bastidores'}, qui:{type:'reel',title:'Reels',sub:'Emagrecimento médico'}, sex:{type:'story',title:'Stories',sub:'Respostas'}, sab:{type:'',title:''}, dom:{type:'',title:''} },
+    { time:'10h', seg:{type:'',title:''}, ter:{type:'',title:''}, qua:{type:'',title:''}, qui:{type:'',title:''}, sex:{type:'',title:''}, sab:{type:'reel',title:'Reels',sub:'Viral / leve'}, dom:{type:'',title:''} },
+  ];
+  const days = ['seg','ter','qua','qui','sex','sab','dom'];
+  let html = '<div class="week-grid">';
+  html += '<div></div>';
+  ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(d => { html += `<div class="week-header">${d}</div>`; });
+  slots.forEach(row => {
+    html += `<div class="week-time">${row.time}</div>`;
+    days.forEach(d => {
+      const s = row[d];
+      if (!s || !s.type) { html += '<div class="week-slot empty"></div>'; return; }
+      html += `<div class="week-slot ${s.type}"><div class="week-slot-type">${s.title}</div><div class="week-slot-title">${s.sub || ''}</div><div class="week-slot-time">${row.time}</div></div>`;
+    });
+  });
+  html += '</div>';
+  const el = document.getElementById('week-schedule-container');
+  if (el) el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────
+// MODAIS
+// ─────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ─────────────────────────────────────────
+// ROTEIROS
+// ─────────────────────────────────────────
+function toggleRoteiro(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>
